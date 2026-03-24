@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout — The Vinyl Cup</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .checkout-wrap {
+      display: grid; grid-template-columns: 1fr 400px; gap: 60px;
+      max-width: 1140px; margin: 0 auto; padding: 56px 56px 80px;
+    }
+    .checkout-block { margin-bottom: 42px; }
+    .checkout-block-title {
+      font-family: 'Playfair Display'; font-size: 1.25rem;
+      border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 26px;
+    }
+    .payment-icons { display: flex; gap: 10px; margin-bottom: 20px; }
+    .pay-icon {
+      border: 1px solid var(--border); padding: 8px 16px;
+      font-size: .78rem; letter-spacing: 1px; cursor: pointer;
+      transition: all .2s; color: var(--espresso);
+    }
+    .pay-icon.selected { background: var(--espresso); color: var(--cream); border-color: var(--espresso); }
+
+    /* ORDER SUMMARY */
+    .order-box {
+      background: var(--dark-card); padding: 34px;
+      position: sticky; top: 88px;
+    }
+    .order-box-title { font-family: 'Bebas Neue'; font-size: 1.5rem; color: var(--cream); letter-spacing: 3px; margin-bottom: 24px; }
+    .order-line { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: .88rem; }
+    .order-line span { color: var(--text-muted); }
+    .order-line strong { color: var(--cream); }
+    .order-divider { border: none; border-top: 1px solid #3A2A1A; margin: 20px 0; }
+    .order-total { display: flex; justify-content: space-between; }
+    .order-total span { color: var(--cream); text-transform: uppercase; letter-spacing: 1px; font-size: .82rem; }
+    .order-total strong { color: var(--mustard); font-family: 'Bebas Neue'; font-size: 2rem; }
+    .place-btn {
+      width: 100%; background: var(--rust); color: var(--cream); border: none;
+      padding: 18px; margin-top: 26px;
+      font-family: 'Courier Prime'; font-size: .88rem;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background .2s;
+    }
+    .place-btn:hover { background: var(--mustard); color: var(--espresso); }
+    .order-meta { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
+    .order-meta span { font-size: .75rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+
+    /* EMPTY CART WARNING */
+    .empty-warning {
+      background: #2A1A12; border-left: 4px solid var(--rust);
+      padding: 20px 24px; margin-bottom: 30px;
+      color: var(--text-muted); font-size: .88rem; display: none;
+    }
+
+    @media (max-width: 960px) {
+      .checkout-wrap { grid-template-columns: 1fr; padding: 36px 28px 60px; gap: 36px; }
+      .order-box { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">The <span>Vinyl</span> Cup</a>
+  <ul class="navbar-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="navbar-right">
+    <button class="cart-toggle" onclick="toggleCart()">🛒 Cart
+      <span class="cart-badge" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer-head">
+    <h2>Your Order</h2>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-foot" id="cart-foot" style="display:none">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <strong id="cart-total-val">₹0</strong>
+    </div>
+    <a href="checkout.html" class="btn btn-rust" style="width:100%;justify-content:center;margin-top:8px;">Checkout →</a>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- PAGE HEADER -->
+<div class="page-hero" data-char="PAY">
+  <div class="eyebrow">Almost There</div>
+  <h1>Checkout</h1>
+</div>
+
+<div class="checkout-wrap">
+  <!-- LEFT COLUMN -->
+  <div>
+    <div class="empty-warning" id="empty-warn">
+      ⚠️ Your cart is empty. <a href="menu.html" style="color:var(--mustard)">Browse our menu</a> to add items.
+    </div>
+
+    <!-- DELIVERY -->
+    <div class="checkout-block">
+      <div class="checkout-block-title">📦 Delivery Details</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="Priya"/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Pillai"/></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="priya@example.com"/></div>
+      <div class="form-group"><label>Phone</label><input type="tel" placeholder="+91 98765 43210"/></div>
+      <div class="form-group"><label>Delivery Address</label><input type="text" placeholder="Flat 4B, Brigade Residency"/></div>
+      <div class="form-row">
+        <div class="form-group"><label>City</label><input type="text" placeholder="Chennai"/></div>
+        <div class="form-group"><label>Pincode</label><input type="text" placeholder="600004"/></div>
+      </div>
+      <div class="form-group">
+        <label>Delivery Instructions (optional)</label>
+        <input type="text" placeholder="Ring bell twice, leave at door..."/>
+      </div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="checkout-block">
+      <div class="checkout-block-title">💳 Payment</div>
+      <div class="payment-icons">
+        <div class="pay-icon selected" onclick="selectPay(this)">Credit Card</div>
+        <div class="pay-icon" onclick="selectPay(this)">Debit Card</div>
+        <div class="pay-icon" onclick="selectPay(this)">UPI</div>
+        <div class="pay-icon" onclick="selectPay(this)">COD</div>
+      </div>
+      <div class="form-group"><label>Card Number</label><input type="text" placeholder="4242 4242 4242 4242"/></div>
+      <div class="form-row">
+        <div class="form-group"><label>Expiry</label><input type="text" placeholder="MM / YY"/></div>
+        <div class="form-group"><label>CVV</label><input type="text" placeholder="· · ·"/></div>
+      </div>
+      <div class="form-group"><label>Name on Card</label><input type="text" placeholder="Priya Pillai"/></div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN — ORDER SUMMARY -->
+  <div>
+    <div class="order-box">
+      <div class="order-box-title">Order Summary</div>
+      <div id="checkout-lines"></div>
+      <hr class="order-divider"/>
+      <div class="order-line"><span>Subtotal</span><strong id="co-subtotal">₹0</strong></div>
+      <div class="order-line"><span>Delivery</span><strong style="color:var(--sage)">Free</strong></div>
+      <div class="order-line"><span>Taxes (5%)</span><strong id="co-tax">₹0</strong></div>
+      <hr class="order-divider"/>
+      <div class="order-total">
+        <span>Total</span>
+        <strong id="co-total">₹0</strong>
+      </div>
+      <button class="place-btn" onclick="placeOrder()">Place Order ✓</button>
+      <div class="order-meta">
+        <span>🔒 256-bit SSL encrypted</span>
+        <span>🚚 Delivered in 30–45 minutes</span>
+        <span>↩️ Easy returns within 30 minutes</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-brand">
+    <div class="logo">The <span>Vinyl</span> Cup</div>
+    <p>Brewed with soul since 1974.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Navigate</h4>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Help</h4>
+    <ul>
+      <li><a href="#">FAQ</a></li>
+      <li><a href="#">Track Order</a></li>
+      <li><a href="#">Refund Policy</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Legal</h4>
+    <ul>
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 The Vinyl Cup. All rights reserved.</span>
+    <span>Made with ☕ in Chennai</span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  function selectPay(el) {
+    document.querySelectorAll('.pay-icon').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function renderCheckout() {
+    const cart = getCart();
+    const sub = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const tax = Math.round(sub * 0.05);
+    const total = sub + tax;
+
+    if (cart.length === 0) {
+      document.getElementById('empty-warn').style.display = 'block';
+    }
+
+    document.getElementById('checkout-lines').innerHTML = cart.map(i => `
+      <div class="order-line">
+        <span>${i.icon} ${i.name} ×${i.qty}</span>
+        <strong>₹${i.price * i.qty}</strong>
+      </div>`).join('') || '<p style="color:var(--text-muted);font-size:.84rem;">No items yet.</p>';
+
+    document.getElementById('co-subtotal').textContent = `₹${sub}`;
+    document.getElementById('co-tax').textContent      = `₹${tax}`;
+    document.getElementById('co-total').textContent    = `₹${total}`;
+  }
+
+  function placeOrder() {
+    const cart = getCart();
+    if (cart.length === 0) { showToast('⚠️ Your cart is empty!'); return; }
+    const num = '#VC-' + Math.floor(1000 + Math.random() * 9000);
+    localStorage.setItem('vc_last_order', num);
+    clearCart();
+    window.location.href = 'confirmation.html';
+  }
+
+  renderCheckout();
+</script>
+</body>
+</html>
