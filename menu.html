@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu — The Vinyl Cup</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .filter-bar {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      padding: 32px 56px 0;
+    }
+    .filter-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--espresso); padding: 9px 26px;
+      font-family: 'Courier Prime'; font-size: .78rem;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn:hover,
+    .filter-btn.active { background: var(--rust); color: var(--cream); border-color: var(--rust); }
+
+    .menu-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 28px; padding: 36px 56px 80px;
+    }
+    .menu-card {
+      background: var(--white); border: 1px solid #E0D8CC; overflow: hidden;
+    }
+    .menu-card-img {
+      height: 175px; display: flex; align-items: center; justify-content: center;
+      font-size: 4.5rem; position: relative;
+    }
+    .menu-badge {
+      position: absolute; top: 12px; right: 12px;
+      background: var(--rust); color: var(--cream);
+      font-size: .62rem; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 4px 10px;
+    }
+    .menu-card-body { padding: 22px 24px; }
+    .menu-card-name { font-family: 'Playfair Display'; font-size: 1.18rem; margin-bottom: 8px; }
+    .menu-card-desc { font-size: .84rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; }
+    .menu-card-foot { display: flex; align-items: center; justify-content: space-between; }
+    .menu-price { font-family: 'Bebas Neue'; font-size: 1.7rem; color: var(--rust); }
+    .add-btn {
+      background: var(--espresso); color: var(--cream); border: none;
+      padding: 10px 20px; font-family: 'Courier Prime'; font-size: .78rem;
+      letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: background .2s;
+    }
+    .add-btn:hover { background: var(--rust); }
+
+    /* hidden class */
+    .menu-card.hidden { display: none; }
+
+    @media (max-width: 960px) {
+      .filter-bar, .menu-grid { padding-left: 28px; padding-right: 28px; }
+      .menu-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">The <span>Vinyl</span> Cup</a>
+  <ul class="navbar-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html" class="active">Menu</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="navbar-right">
+    <button class="cart-toggle" onclick="toggleCart()">🛒 Cart
+      <span class="cart-badge" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer-head">
+    <h2>Your Order</h2>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-foot" id="cart-foot" style="display:none">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <strong id="cart-total-val">₹0</strong>
+    </div>
+    <a href="checkout.html" class="btn btn-rust" style="width:100%;justify-content:center;margin-top:8px;">Checkout →</a>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- PAGE HEADER -->
+<div class="page-hero" data-char="MENU">
+  <div class="eyebrow">Brewed with Love</div>
+  <h1>Our Menu</h1>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterMenu('all',this)">All Items</button>
+  <button class="filter-btn" onclick="filterMenu('coffee',this)">☕ Coffee</button>
+  <button class="filter-btn" onclick="filterMenu('tea',this)">🍵 Tea</button>
+  <button class="filter-btn" onclick="filterMenu('food',this)">🍽️ Food</button>
+  <button class="filter-btn" onclick="filterMenu('dessert',this)">🍮 Desserts</button>
+</div>
+
+<!-- MENU GRID -->
+<div class="menu-grid" id="menu-grid"></div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-brand">
+    <div class="logo">The <span>Vinyl</span> Cup</div>
+    <p>Brewed with soul since 1974. Single-origin coffee, live vinyl sessions, and handmade bakes — all under one roof.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Navigate</h4>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Brews</h4>
+    <ul>
+      <li><a href="#" onclick="filterMenu('coffee',document.querySelector('.filter-btn'))">Coffee</a></li>
+      <li><a href="#" onclick="filterMenu('tea',document.querySelector('.filter-btn'))">Tea</a></li>
+      <li><a href="#" onclick="filterMenu('food',document.querySelector('.filter-btn'))">Food</a></li>
+      <li><a href="#" onclick="filterMenu('dessert',document.querySelector('.filter-btn'))">Desserts</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Find Us</h4>
+    <ul>
+      <li><a href="contact.html">Visit the Café</a></li>
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">Facebook</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 The Vinyl Cup. All rights reserved.</span>
+    <span>Made with ☕ in Chennai</span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  const ITEMS = [
+    { id:1,  name:'Mysore Filter Kaapi',        desc:'Traditional south Indian filter coffee with chicory, served in a brass tumbler-dabarah set.', price:120, cat:'coffee',  icon:'☕', badge:'Bestseller', bg:'#FDF0E0' },
+    { id:2,  name:'Cold Brew Noir',              desc:'18-hour steeped Arabica over hand-chipped ice. Strong, smooth, and unapologetically bold.', price:200, cat:'coffee',  icon:'🧊', badge:'',           bg:'#E0EEF9' },
+    { id:3,  name:'Monsoon Malabar Espresso',    desc:'Double shot of wet-processed Malabar beans with a thick crema and notes of dark chocolate.', price:160, cat:'coffee',  icon:'⚡', badge:'New',        bg:'#F0E5DC' },
+    { id:4,  name:'Cardamom Latte',              desc:'Silky microfoam, single origin espresso, and freshly cracked green cardamom. Warming.', price:180, cat:'coffee',  icon:'🌿', badge:'',           bg:'#E5F0E3' },
+    { id:5,  name:'Vintage Kappi Float',         desc:'Cold brew poured over vanilla ice cream, dusted with cocoa. Dessert and coffee in one.', price:240, cat:'coffee',  icon:'🍦', badge:"Chef's Pick", bg:'#F5E0EE' },
+    { id:6,  name:'Nilgiri Mountain Tea',        desc:'Hand-rolled orthodox leaves from the Blue Mountains, steeped 4 min, with a cardamom pod.', price:100, cat:'tea',     icon:'🍃', badge:'',           bg:'#D8F0E3' },
+    { id:7,  name:'Masala Chai',                 desc:'House spice blend: ginger, clove, pepper, cinnamon. Brewed strong, sweetened with jaggery.', price:90,  cat:'tea',     icon:'🫖', badge:'Bestseller', bg:'#F9EDD5' },
+    { id:8,  name:'Rose Kashmiri Kahwa',         desc:'Saffron-tinted green tea with rose petals, almonds, and Kashmiri honey.', price:150, cat:'tea',     icon:'🌹', badge:'Seasonal',  bg:'#F9D8E2' },
+    { id:9,  name:'Masala Dosa',                 desc:'Crispy rice crepe with spiced potato filling. Served with coconut chutney and sambar.', price:180, cat:'food',    icon:'🫓', badge:'',           bg:'#F9EDD5' },
+    { id:10, name:'Club Sandwich',               desc:'Triple-decker toast with chicken, egg, cucumber, tomato, and house mayo.', price:250, cat:'food',    icon:'🥪', badge:'',           bg:'#DDF0F9' },
+    { id:11, name:'Avocado Toast',               desc:'Sourdough, smashed avocado, poached egg, chilli flakes, and lemon zest.', price:280, cat:'food',    icon:'🥑', badge:'New',        bg:'#DCF5DC' },
+    { id:12, name:'Butter Croissant',            desc:'Flaky, laminated, buttery. Baked fresh every morning at 6am. Best eaten before noon.', price:120, cat:'food',    icon:'🥐', badge:'Morning',    bg:'#F9F2D5' },
+    { id:13, name:'Gulab Jamun Tart',            desc:'Flaky pastry shell filled with gulab jamun and rabri cream. Topped with rose petals.', price:200, cat:'dessert', icon:'🌸', badge:"Chef's Pick", bg:'#F9D8EE' },
+    { id:14, name:'Coffee Panna Cotta',          desc:'Espresso-infused panna cotta with a caramel crown. Set 12 hours, wobbles perfectly.', price:220, cat:'dessert', icon:'🍮', badge:'',           bg:'#F0E5DC' },
+    { id:15, name:'Dark Chocolate Brownie',      desc:'Valrhona brownie served warm with vanilla bean ice cream. Molten centre.', price:180, cat:'dessert', icon:'🍫', badge:'Bestseller', bg:'#E0D5CC' },
+    { id:16, name:'Jaggery Banana Pancakes',     desc:'Fluffy whole-wheat pancakes with caramelised banana and house jaggery syrup.', price:200, cat:'dessert', icon:'🥞', badge:'',           bg:'#F9F0D5' },
+  ];
+
+  function renderMenu(filter = 'all') {
+    const grid = document.getElementById('menu-grid');
+    const items = filter === 'all' ? ITEMS : ITEMS.filter(i => i.cat === filter);
+    grid.innerHTML = items.map(item => `
+      <div class="menu-card lift">
+        <div class="menu-card-img" style="background:${item.bg}">
+          ${item.icon}
+          ${item.badge ? `<span class="menu-badge">${item.badge}</span>` : ''}
+        </div>
+        <div class="menu-card-body">
+          <div class="menu-card-name">${item.name}</div>
+          <p class="menu-card-desc">${item.desc}</p>
+          <div class="menu-card-foot">
+            <div class="menu-price">₹${item.price}</div>
+            <button class="add-btn" onclick="addToCart(${item.id},'${item.name.replace(/'/g,"\\'")}','${item.icon}',${item.price})">+ Add</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterMenu(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMenu(cat);
+  }
+
+  renderMenu();
+</script>
+</body>
+</html>
