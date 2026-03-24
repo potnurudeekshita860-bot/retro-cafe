@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — The Vinyl Cup</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    /* ---- STORY SPLIT ---- */
+    .story-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      background: var(--espresso);
+    }
+    .story-text { padding: 100px 72px; }
+    .story-text .eyebrow { margin-bottom: 20px; }
+    .story-text h2 { font-size: clamp(2rem,4vw,3.2rem); color: var(--cream); margin-bottom: 28px; }
+    .story-text p { color: var(--text-muted); line-height: 1.9; font-size: .95rem; margin-bottom: 18px; }
+    .story-visual {
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #2A1A12, #1A0F0A);
+      font-size: 11rem; position: relative;
+    }
+    .story-visual-label {
+      position: absolute; bottom: 40px; left: 40px;
+      border: 1px solid rgba(255,255,255,.12); padding: 12px 22px;
+      color: rgba(245,240,232,.4); font-size: .7rem; letter-spacing: 3px; text-transform: uppercase;
+    }
+
+    /* ---- TIMELINE ---- */
+    .timeline-section { background: var(--white); }
+    .timeline { max-width: 860px; margin: 0 auto; position: relative; padding: 20px 0 40px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+      width: 2px; background: var(--border); transform: translateX(-50%);
+    }
+    .tl-row {
+      display: grid; grid-template-columns: 1fr 60px 1fr;
+      gap: 0; align-items: center; margin-bottom: 56px;
+    }
+    .tl-row:last-child { margin-bottom: 0; }
+    .tl-content-left { text-align: right; padding-right: 40px; }
+    .tl-content-right { padding-left: 40px; }
+    .tl-dot {
+      background: var(--rust); width: 60px; height: 60px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue'; font-size: 1rem; color: var(--cream); letter-spacing: 1px;
+      z-index: 1; position: relative; flex-shrink: 0;
+      box-shadow: 0 0 0 6px var(--white), 0 0 0 8px var(--border);
+    }
+    .tl-year-label { font-family: 'Bebas Neue'; font-size: 1.1rem; color: var(--rust); letter-spacing: 2px; margin-bottom: 6px; }
+    .tl-event { font-family: 'Playfair Display'; font-size: 1.1rem; margin-bottom: 8px; }
+    .tl-desc { font-size: .84rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* ---- VALUES ---- */
+    .values-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--border);
+    }
+    .value-card {
+      background: var(--dark-card); padding: 48px 36px; text-align: center;
+    }
+    .value-icon { font-size: 2.8rem; margin-bottom: 18px; }
+    .value-title { font-family: 'Playfair Display'; font-size: 1.15rem; color: var(--cream); margin-bottom: 12px; }
+    .value-text { font-size: .84rem; color: var(--text-muted); line-height: 1.75; }
+
+    /* ---- TEAM ---- */
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .team-card {
+      text-align: center; border: 1px solid #E0D8CC;
+      padding: 44px 28px; background: var(--white);
+    }
+    .team-avatar { font-size: 4.5rem; margin-bottom: 18px; }
+    .team-name { font-family: 'Playfair Display'; font-size: 1.2rem; margin-bottom: 6px; }
+    .team-role { font-size: .7rem; letter-spacing: 2.5px; color: var(--rust); text-transform: uppercase; margin-bottom: 16px; }
+    .team-bio { font-size: .85rem; color: var(--text-muted); line-height: 1.7; }
+
+    @media (max-width: 960px) {
+      .story-split { grid-template-columns: 1fr; }
+      .story-visual { display: none; }
+      .story-text { padding: 64px 28px; }
+      .timeline::before { left: 24px; }
+      .tl-row { grid-template-columns: 48px 1fr; }
+      .tl-content-left { display: none; }
+      .tl-dot { width: 48px; height: 48px; font-size: .85rem; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">The <span>Vinyl</span> Cup</a>
+  <ul class="navbar-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="navbar-right">
+    <button class="cart-toggle" onclick="toggleCart()">🛒 Cart
+      <span class="cart-badge" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer-head">
+    <h2>Your Order</h2>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-foot" id="cart-foot" style="display:none">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <strong id="cart-total-val">₹0</strong>
+    </div>
+    <a href="checkout.html" class="btn btn-rust" style="width:100%;justify-content:center;margin-top:8px;">Checkout →</a>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- PAGE HERO -->
+<div class="page-hero" data-char="STORY">
+  <div class="eyebrow">Est. 1974</div>
+  <h1>Our Story</h1>
+</div>
+
+<!-- STORY SPLIT -->
+<section class="story-split">
+  <div class="story-text">
+    <div class="eyebrow" style="color:var(--mustard)">Born from a Jazz Flat</div>
+    <h2>Where Records & Roasts First Met</h2>
+    <p>It was 1974. Rajan Pillai, a jazz musician with a coffee obsession, turned his cramped Madras apartment into a listening room that smelled of dark roast and cardamom. Neighbours came for the music, stayed for the coffee — and refused to leave.</p>
+    <p>Fifty years later, The Vinyl Cup still carries that spirit — analogue warmth in a digital world. We believe great coffee, like great music, demands patience, craft, and soul. Every cup is a small act of resistance against the disposable and the hurried.</p>
+    <p>We source only from farms we've visited. We roast in-house every morning. We bake from recipes that predate the internet. We are stubbornly, joyfully, unhurriedly old-fashioned.</p>
+  </div>
+  <div class="story-visual">
+    🎷
+    <div class="story-visual-label">Rajan's Flat, Madras, 1974</div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<div class="values-grid">
+  <div class="value-card">
+    <div class="value-icon">🌱</div>
+    <div class="value-title">Farm to Cup</div>
+    <p class="value-text">Direct relationships with 12 small farms across Coorg, Wayanad, and the Nilgiris. No middlemen, full traceability.</p>
+  </div>
+  <div class="value-card">
+    <div class="value-icon">🔥</div>
+    <div class="value-title">Daily Fresh Roasts</div>
+    <p class="value-text">Beans roasted every morning by 5am. We never serve anything older than 48 hours. Freshness is non-negotiable.</p>
+  </div>
+  <div class="value-card">
+    <div class="value-icon">🎵</div>
+    <div class="value-title">Live Analogue Sound</div>
+    <p class="value-text">Every weekend, original vinyl on proper turntables. No streaming, no algorithms — just warm, real, imperfect sound.</p>
+  </div>
+  <div class="value-card">
+    <div class="value-icon">♻️</div>
+    <div class="value-title">Zero Waste Goal</div>
+    <p class="value-text">Compostable packaging, spent grounds donated to local gardens, and a 10% discount for customers who bring their own cup.</p>
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<section class="section section-white">
+  <h2 class="section-title">Five Decades of Brewing</h2>
+  <div class="timeline">
+    <div class="tl-row">
+      <div class="tl-content-left">
+        <div class="tl-year-label">1974</div>
+        <div class="tl-event">The Apartment</div>
+        <p class="tl-desc">Rajan opens his home to fellow music lovers, brewing filter coffee on a wood stove.</p>
+      </div>
+      <div class="tl-dot">74</div>
+      <div class="tl-content-right"></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-content-left"></div>
+      <div class="tl-dot">88</div>
+      <div class="tl-content-right">
+        <div class="tl-year-label">1988</div>
+        <div class="tl-event">First Proper Café</div>
+        <p class="tl-desc">The Vinyl Cup opens in Mylapore, Chennai — with a proper stage and 200 records on the wall.</p>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-content-left">
+        <div class="tl-year-label">1999</div>
+        <div class="tl-event">The Second Record</div>
+        <p class="tl-desc">A second location opens in Besant Nagar. The coffee gets better; the music gets louder.</p>
+      </div>
+      <div class="tl-dot">99</div>
+      <div class="tl-content-right"></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-content-left"></div>
+      <div class="tl-dot">03</div>
+      <div class="tl-content-right">
+        <div class="tl-year-label">2003</div>
+        <div class="tl-event">Second Generation</div>
+        <p class="tl-desc">Priya Pillai takes the helm after three years learning from Colombian farmers. The single-origin era begins.</p>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-content-left">
+        <div class="tl-year-label">2024</div>
+        <div class="tl-event">The Online Era</div>
+        <p class="tl-desc">We bring our brews to your doorstep while fiercely preserving the analogue soul of the original.</p>
+      </div>
+      <div class="tl-dot">24</div>
+      <div class="tl-content-right"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section" style="background:var(--cream)">
+  <p style="font-size:.72rem;letter-spacing:4px;text-transform:uppercase;color:var(--rust);text-align:center;margin-bottom:14px;">The People</p>
+  <h2 class="section-title">Meet the Crew</h2>
+  <div class="team-grid">
+    <div class="team-card lift">
+      <div class="team-avatar">👩‍🍳</div>
+      <div class="team-name">Priya Pillai</div>
+      <div class="team-role">Head Roaster & Owner</div>
+      <p class="team-bio">Second-generation keeper of the flame. Priya spent three years in Colombia learning from the best farmers before returning to revolutionise the menu. Her palate is legendary.</p>
+    </div>
+    <div class="team-card lift">
+      <div class="team-avatar">🧔</div>
+      <div class="team-name">Arjun Nair</div>
+      <div class="team-role">Head Barista</div>
+      <p class="team-bio">Arjun treats every espresso shot like a performance. Champion of the South India Barista Championship 2021 and a passionate collector of vintage espresso machines.</p>
+    </div>
+    <div class="team-card lift">
+      <div class="team-avatar">👩‍🎨</div>
+      <div class="team-name">Meena Krishnan</div>
+      <div class="team-role">Pastry Chef</div>
+      <p class="team-bio">Trained in Pondicherry and Paris, Meena blends French technique with South Indian flavour profiles in every slice she bakes. The gulab jamun tart is entirely her invention.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-brand">
+    <div class="logo">The <span>Vinyl</span> Cup</div>
+    <p>Brewed with soul since 1974. Single-origin coffee, live vinyl sessions, and handmade bakes — all under one roof.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Navigate</h4>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Menu</h4>
+    <ul>
+      <li><a href="menu.html">Coffee</a></li>
+      <li><a href="menu.html">Tea</a></li>
+      <li><a href="menu.html">Food</a></li>
+      <li><a href="menu.html">Desserts</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Find Us</h4>
+    <ul>
+      <li><a href="contact.html">Visit the Café</a></li>
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">Facebook</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 The Vinyl Cup. All rights reserved.</span>
+    <span>Made with ☕ in Chennai</span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
