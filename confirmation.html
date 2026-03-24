@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Confirmed — The Vinyl Cup</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .confirm-page {
+      min-height: 80vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 60px 28px;
+      background: radial-gradient(ellipse at center, #2A1A12 0%, var(--espresso) 70%);
+    }
+    .confirm-box { max-width: 560px; }
+    .confirm-icon { font-size: 6rem; animation: popIn .5s cubic-bezier(.18,.89,.32,1.28); margin-bottom: 28px; display: block; }
+    @keyframes popIn { from { transform: scale(0) rotate(-15deg); opacity:0; } to { transform: scale(1) rotate(0); opacity:1; } }
+    .confirm-title { font-family: 'Playfair Display'; font-size: 2.6rem; color: var(--cream); margin-bottom: 14px; }
+    .confirm-subtitle { color: var(--text-muted); font-size: .95rem; line-height: 1.8; margin-bottom: 36px; }
+    .order-num { font-family: 'Bebas Neue'; font-size: 3.2rem; color: var(--mustard); letter-spacing: 5px; margin-bottom: 36px; display: block; }
+    .confirm-steps {
+      display: flex; gap: 0; margin: 0 auto 44px; max-width: 420px;
+      border: 1px solid #3A2A1A;
+    }
+    .step { flex: 1; padding: 18px 10px; text-align: center; border-right: 1px solid #3A2A1A; }
+    .step:last-child { border-right: none; }
+    .step-icon { font-size: 1.6rem; margin-bottom: 6px; display: block; }
+    .step-label { font-size: .7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
+    .step.active .step-label { color: var(--mustard); }
+    .step.active .step-icon { animation: pulse 1s ease-in-out infinite alternate; }
+    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.2); } }
+    .confirm-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">The <span>Vinyl</span> Cup</a>
+  <ul class="navbar-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="navbar-right">
+    <button class="cart-toggle" onclick="toggleCart()">🛒 Cart
+      <span class="cart-badge" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer-head"><h2>Your Order</h2><button class="cart-close" onclick="toggleCart()">✕</button></div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-foot" id="cart-foot" style="display:none">
+    <div class="cart-total-row"><span>Total</span><strong id="cart-total-val">₹0</strong></div>
+    <a href="checkout.html" class="btn btn-rust" style="width:100%;justify-content:center;margin-top:8px;">Checkout →</a>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<div class="confirm-page">
+  <div class="confirm-box">
+    <span class="confirm-icon">🎉</span>
+    <h1 class="confirm-title">Order Confirmed!</h1>
+    <span class="order-num" id="order-num">#VC-0000</span>
+    <p class="confirm-subtitle">Your order is being brewed and packed with love. You'll get an SMS confirmation shortly. Meanwhile, put on a record and relax.</p>
+
+    <div class="confirm-steps">
+      <div class="step active">
+        <span class="step-icon">✅</span>
+        <div class="step-label">Confirmed</div>
+      </div>
+      <div class="step active">
+        <span class="step-icon">☕</span>
+        <div class="step-label">Brewing</div>
+      </div>
+      <div class="step">
+        <span class="step-icon">📦</span>
+        <div class="step-label">Packed</div>
+      </div>
+      <div class="step">
+        <span class="step-icon">🛵</span>
+        <div class="step-label">On the Way</div>
+      </div>
+    </div>
+
+    <div class="confirm-btns">
+      <a href="index.html" class="btn btn-rust">Back to Home</a>
+      <a href="menu.html" class="btn btn-outline">Order Again</a>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+  const num = localStorage.getItem('vc_last_order') || '#VC-' + Math.floor(1000 + Math.random()*9000);
+  document.getElementById('order-num').textContent = num;
+</script>
+</body>
+</html>
