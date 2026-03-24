@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact — The Vinyl Cup</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .contact-layout {
+      display: grid; grid-template-columns: 1fr 1fr; min-height: 72vh;
+    }
+    .contact-info {
+      background: var(--espresso); padding: 80px 72px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .contact-info h2 { font-size: clamp(2rem,4vw,3rem); color: var(--cream); line-height: 1.15; margin-bottom: 48px; }
+    .contact-detail { display: flex; gap: 18px; margin-bottom: 36px; align-items: flex-start; }
+    .cd-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
+    .cd-label { font-size: .68rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--rust); margin-bottom: 6px; }
+    .cd-value { color: var(--text-muted); font-size: .9rem; line-height: 1.65; }
+    .social-row { display: flex; gap: 14px; margin-top: 48px; }
+    .social-btn {
+      border: 1px solid rgba(255,255,255,.15); color: var(--text-muted);
+      padding: 10px 20px; font-size: .78rem; letter-spacing: 1.5px; text-transform: uppercase;
+      text-decoration: none; transition: all .2s;
+    }
+    .social-btn:hover { border-color: var(--mustard); color: var(--mustard); }
+
+    .contact-form-wrap { background: var(--white); padding: 80px 72px; }
+    .contact-form-wrap h3 { font-family: 'Playfair Display'; font-size: 2rem; margin-bottom: 36px; }
+    .submit-btn {
+      background: var(--rust); color: var(--cream); border: none;
+      padding: 16px 48px; font-family: 'Courier Prime'; font-size: .88rem;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all .2s;
+    }
+    .submit-btn:hover { background: var(--espresso); transform: translateY(-2px); }
+
+    /* ---- MAP PLACEHOLDER ---- */
+    .map-placeholder {
+      background: var(--dark-card); height: 380px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .map-content { text-align: center; }
+    .map-pin { font-size: 4rem; animation: bounce .8s ease-in-out infinite alternate; }
+    @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+    .map-address { color: var(--text-muted); font-size: .88rem; margin-top: 16px; line-height: 1.6; }
+    .map-grid-lines {
+      position: absolute; inset: 0; opacity: .06;
+      background-image: linear-gradient(var(--cream) 1px, transparent 1px),
+                        linear-gradient(90deg, var(--cream) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* ---- HOURS ---- */
+    .hours-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+    .hours-cell { background: var(--white); padding: 32px 28px; }
+    .hours-days { font-family: 'Bebas Neue'; font-size: 1.1rem; letter-spacing: 2px; color: var(--rust); margin-bottom: 6px; }
+    .hours-time { font-family: 'Playfair Display'; font-size: 1.4rem; margin-bottom: 4px; }
+    .hours-note { font-size: .78rem; color: var(--text-muted); }
+
+    @media (max-width: 960px) {
+      .contact-layout { grid-template-columns: 1fr; }
+      .contact-info, .contact-form-wrap { padding: 56px 28px; }
+      .hours-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">The <span>Vinyl</span> Cup</a>
+  <ul class="navbar-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <div class="navbar-right">
+    <button class="cart-toggle" onclick="toggleCart()">🛒 Cart
+      <span class="cart-badge" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer-head">
+    <h2>Your Order</h2>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-foot" id="cart-foot" style="display:none">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <strong id="cart-total-val">₹0</strong>
+    </div>
+    <a href="checkout.html" class="btn btn-rust" style="width:100%;justify-content:center;margin-top:8px;">Checkout →</a>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- PAGE HEADER -->
+<div class="page-hero" data-char="HELLO">
+  <div class="eyebrow">We'd Love to Hear From You</div>
+  <h1>Get in Touch</h1>
+</div>
+
+<!-- CONTACT SPLIT -->
+<div class="contact-layout">
+  <div class="contact-info">
+    <h2>Visit Us.<br/>Call Us.<br/>Write to Us.</h2>
+    <div class="contact-detail">
+      <div class="cd-icon">📍</div>
+      <div>
+        <div class="cd-label">Address</div>
+        <div class="cd-value">12, Vinyl Lane, Mylapore<br/>Chennai — 600004, Tamil Nadu</div>
+      </div>
+    </div>
+    <div class="contact-detail">
+      <div class="cd-icon">📞</div>
+      <div>
+        <div class="cd-label">Phone</div>
+        <div class="cd-value">+91 44 2345 6789<br/>+91 98765 43210 (WhatsApp)</div>
+      </div>
+    </div>
+    <div class="contact-detail">
+      <div class="cd-icon">✉️</div>
+      <div>
+        <div class="cd-label">Email</div>
+        <div class="cd-value">hello@thevinylcup.in<br/>orders@thevinylcup.in</div>
+      </div>
+    </div>
+    <div class="social-row">
+      <a href="#" class="social-btn">Instagram</a>
+      <a href="#" class="social-btn">Facebook</a>
+      <a href="#" class="social-btn">Twitter</a>
+    </div>
+  </div>
+
+  <div class="contact-form-wrap">
+    <h3>Send a Message</h3>
+    <div class="form-row">
+      <div class="form-group"><label>First Name</label><input type="text" placeholder="Rajan"/></div>
+      <div class="form-group"><label>Last Name</label><input type="text" placeholder="Pillai"/></div>
+    </div>
+    <div class="form-group"><label>Email</label><input type="email" placeholder="rajan@example.com"/></div>
+    <div class="form-group">
+      <label>Subject</label>
+      <select>
+        <option>General enquiry</option>
+        <option>Catering / events</option>
+        <option>Order issue</option>
+        <option>Feedback</option>
+        <option>Press / media</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Message</label>
+      <textarea rows="5" placeholder="Tell us everything..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="handleSubmit()">Send Message →</button>
+  </div>
+</div>
+
+<!-- OPENING HOURS -->
+<section class="section-sm section-white">
+  <p style="font-size:.72rem;letter-spacing:4px;text-transform:uppercase;color:var(--rust);text-align:center;margin-bottom:14px;">We're Open</p>
+  <h2 class="section-title" style="margin-bottom:32px;">Opening Hours</h2>
+  <div class="hours-grid">
+    <div class="hours-cell">
+      <div class="hours-days">Monday — Friday</div>
+      <div class="hours-time">7:00 am — 10:00 pm</div>
+      <p class="hours-note">Kitchen closes 9:30pm</p>
+    </div>
+    <div class="hours-cell">
+      <div class="hours-days">Saturday</div>
+      <div class="hours-time">8:00 am — 11:30 pm</div>
+      <p class="hours-note">Live vinyl 7pm — 10pm</p>
+    </div>
+    <div class="hours-cell">
+      <div class="hours-days">Sunday</div>
+      <div class="hours-time">9:00 am — 9:00 pm</div>
+      <p class="hours-note">Brunch menu 9am — 1pm</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAP PLACEHOLDER -->
+<div class="map-placeholder">
+  <div class="map-grid-lines"></div>
+  <div class="map-content">
+    <div class="map-pin">📍</div>
+    <p class="map-address">12, Vinyl Lane, Mylapore, Chennai<br/>
+      <a href="https://maps.google.com" target="_blank" style="color:var(--mustard);font-size:.8rem;letter-spacing:1px;">Open in Google Maps →</a>
+    </p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-brand">
+    <div class="logo">The <span>Vinyl</span> Cup</div>
+    <p>Brewed with soul since 1974. Single-origin coffee, live vinyl sessions, and handmade bakes — all under one roof.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Navigate</h4>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Menu</h4>
+    <ul>
+      <li><a href="menu.html">Coffee</a></li>
+      <li><a href="menu.html">Tea</a></li>
+      <li><a href="menu.html">Food</a></li>
+      <li><a href="menu.html">Desserts</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Find Us</h4>
+    <ul>
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">Facebook</a></li>
+      <li><a href="#">Twitter</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 The Vinyl Cup. All rights reserved.</span>
+    <span>Made with ☕ in Chennai</span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  function handleSubmit() {
+    showToast('✉️ Message sent! We\'ll reply within 24 hours.');
+  }
+</script>
+</body>
+</html>
